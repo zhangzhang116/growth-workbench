@@ -2,7 +2,7 @@
   "name": "张张的成长工作台",
   "short_name": "成长工作台",
   "description": "个人成长管理：健身、英语、计算机学习、记账等",
-  "start_url": "/index.html",
+  "start_url": "/app.html",
   "display": "standalone",
   "orientation": "portrait",
   "background_color": "#FFE4E1",

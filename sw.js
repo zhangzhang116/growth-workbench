@@ -1,6 +1,6 @@
 // Service Worker - 离线缓存
 const CACHE_NAME = 'zz-growth-v2';
-const ASSETS = ['./', './index.html', './manifest.json'];
+const ASSETS = ['./', './app.html', './manifest.json'];
 
 self.addEventListener('install', e => {
   self.skipWaiting();
@@ -25,6 +25,6 @@ self.addEventListener('fetch', e => {
         caches.open(CACHE_NAME).then(c => c.put(e.request, copy)).catch(()=>{});
         return res;
       })
-      .catch(() => caches.match(e.request).then(r => r || caches.match('./index.html')))
+      .catch(() => caches.match(e.request).then(r => r || caches.match('./app.html')))
   );
 });
