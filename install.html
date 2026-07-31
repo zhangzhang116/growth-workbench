@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>安装 张张的成长工作台</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/png" href="icon-192.png">
+<style>
+  :root{
+    --pink1:#FFF8FA;--pink2:#FFE5EE;--pink3:#FFD0E0;--pink4:#FFB6C1;--pink5:#FF69B4;--pink6:#FF4080;
+    --bg:#FEF6F9;--card:#FFFFFF;--text1:#5A3A4A;--text2:#8A6A7A;
+    --shadow:0 2px 12px rgba(255,105,180,0.08);
+  }
+  *{margin:0;padding:0;box-sizing:border-box;font-family:'Nunito','Microsoft YaHei',-apple-system,sans-serif}
+  body{background:var(--bg);min-height:100vh;display:flex;justify-content:center;align-items:center;padding:20px;color:var(--text1)}
+  .card{background:var(--card);border-radius:20px;padding:36px 32px;max-width:380px;width:100%;text-align:center;box-shadow:var(--shadow);border:1px solid var(--pink2)}
+  .icon-wrap{width:96px;height:96px;margin:0 auto 18px;border-radius:24px;background:linear-gradient(135deg,var(--pink2),var(--pink3));display:flex;align-items:center;justify-content:center;box-shadow:0 6px 20px rgba(255,105,180,.25)}
+  .icon-wrap img{width:72px;height:72px;border-radius:18px}
+  h1{font-size:22px;color:var(--pink6);margin-bottom:6px;font-weight:800}
+  .desc{font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:24px}
+  .install-btn{display:inline-flex;align-items:center;gap:8px;padding:14px 36px;background:linear-gradient(135deg,var(--pink5),var(--pink6));color:#fff;border:none;border-radius:30px;font-size:15px;font-weight:700;cursor:pointer;box-shadow:0 4px 14px rgba(255,105,180,.4);transition:all .25s}
+  .install-btn:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(255,105,180,.5)}
+  .install-btn:disabled{background:#ccc;cursor:not-allowed;box-shadow:none;transform:none}
+  .install-btn.hide{display:none}
+  .hint{font-size:12px;color:var(--text2);margin-top:18px;line-height:1.7;background:var(--pink1);padding:12px;border-radius:12px;text-align:left}
+  .hint b{color:var(--pink6)}
+  .status{font-size:13px;color:var(--good,#4CAF50);margin-top:14px;display:none}
+  .status.show{display:block}
+  .open-link{display:inline-block;margin-top:14px;color:var(--pink6);text-decoration:none;font-size:13px;font-weight:700;border-bottom:1px dashed var(--pink5)}
+  .open-link:hover{opacity:.8}
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="icon-wrap"><img src="icon-192.png" alt="icon"></div>
+  <h1>张张的成长工作台</h1>
+  <p class="desc">个人成长管理：健身、英语、计算机学习、记账等<br>安装到桌面，像原生应用一样使用</p>
+
+  <button id="installBtn" class="install-btn">
+    <span>📱</span> 安装到桌面
+  </button>
+
+  <p id="status" class="status"></p>
+
+  <a id="openApp" class="open-link hide" href="index.html">→ 或直接在浏览器打开使用</a>
+
+  <div class="hint">
+    <b>安装说明：</b><br>
+    • 点击「安装到桌面」后，浏览器会弹出安装确认框，点「安装」即可<br>
+    • 安装后桌面会出现「张张的成长工作台」图标，双击启动，独立窗口运行<br>
+    • 如果按钮灰色，说明浏览器还没准备好，稍等几秒或刷新页面再试<br>
+    • <b>推荐用 Chrome / Edge 浏览器</b>打开本页（需支持 PWA 安装）
+  </div>
+</div>
+
+<script>
+let deferredPrompt = null;
+const btn = document.getElementById('installBtn');
+const status = document.getElementById('status');
+const openLink = document.getElementById('openApp');
+
+// 捕获 beforeinstallprompt 事件（PWA 安装的核心）
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+  btn.disabled = false;
+  status.textContent = '✅ 已就绪，点击上方按钮即可安装';
+  status.classList.add('show');
+});
+
+// 如果浏览器不支持安装（或已经安装），显示提示
+if (!window.matchMedia('(display-mode: standalone)').matches) {
+  // 还没安装
+  setTimeout(() => {
+    if (!deferredPrompt) {
+      status.innerHTML = '⏳ 浏览器正在准备安装能力…<br>如长时间无反应，请用 <b>Chrome/Edge</b> 打开本页，或在浏览器地址栏右侧找安装图标 ⊕';
+      status.classList.add('show');
+    }
+  }, 2500);
+} else {
+  // 已经是独立窗口模式（已安装）
+  location.href = 'index.html';
+}
+
+btn.addEventListener('click', async () => {
+  if (deferredPrompt) {
+    deferredPrompt.prompt();
+    const { outcome } = await deferredPrompt.userChoice;
+    if (outcome === 'accepted') {
+      status.textContent = '🎉 安装成功！桌面已生成图标，可在应用列表找到「张张的成长工作台」';
+      btn.classList.add('hide');
+      openLink.classList.remove('hide');
+    } else {
+      status.textContent = '已取消安装，可随时再点按钮重试';
+    }
+    deferredPrompt = null;
+  } else {
+    status.innerHTML = '⚠️ 当前浏览器暂不支持一键安装。<br>请改用 <b>Chrome / Edge</b> 打开本页，或手动：地址栏右侧 ⊕ 图标 → 安装';
+    status.classList.add('show');
+  }
+});
+
+// 已安装/独立模式检测
+window.addEventListener('appinstalled', () => {
+  status.textContent = '🎉 安装完成！正在打开应用…';
+  setTimeout(() => location.href = 'index.html', 1200);
+});
+</script>
+</body>
+</html>

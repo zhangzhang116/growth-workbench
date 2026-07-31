@@ -1,0 +1,24 @@
+{
+  "name": "张张的成长工作台",
+  "short_name": "成长工作台",
+  "description": "个人成长管理：健身、英语、计算机学习、记账等",
+  "start_url": "/index.html",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#FFE4E1",
+  "theme_color": "#FF6B9D",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
